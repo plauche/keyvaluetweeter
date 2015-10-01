@@ -21,20 +21,17 @@ func NewKeyValueTweeter(consumerKey string, consumerSecret string, accessToken s
 	return k
 }
 
-func (k KeyValueTweeter) Insert(key string, value string) anaconda.Tweet {
+func (k KeyValueTweeter) Insert(key string, value string) (anaconda.Tweet, error) {
 	tweetString := fmt.Sprintf("%s #%s", value, key)
 	tweet, err := k.Api.PostTweet(tweetString, nil)
-	if err != nil {
-		panic(err)
-	}
-	return tweet
+	return tweet, err
 }
 
-func (k KeyValueTweeter) Find(key string) string {
+func (k KeyValueTweeter) Find(key string) (string, error) {
 	searchString := fmt.Sprintf("%s #%s", k.AccountName, key)
 	searchResult, err := k.Api.GetSearch(searchString, nil)
 	if err != nil {
-		panic(err)
+		return "", err
 	}
 
 	value := ""
@@ -45,14 +42,14 @@ func (k KeyValueTweeter) Find(key string) string {
 		value = strings.TrimSpace(value)
 	}
 
-	return value
+	return value, nil
 }
 
 func (k KeyValueTweeter) Delete(api *anaconda.TwitterApi, key string) (err error) {
 	searchString := fmt.Sprintf("%s #%s", k.AccountName, key)
 	searchResult, err := k.Api.GetSearch(searchString, nil)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	for _, tweet := range searchResult.Statuses {
