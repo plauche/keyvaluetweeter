@@ -22,7 +22,7 @@ func NewKeyValueTweeter(consumerKey string, consumerSecret string, accessToken s
 }
 
 func (k KeyValueTweeter) Insert(key string, value string) (anaconda.Tweet, error) {
-	tweetString := fmt.Sprintf("%s #%s", value, key)
+	tweetString := fmt.Sprintf("#%s %s", key, value)
 	tweet, err := k.Api.PostTweet(tweetString, nil)
 	return tweet, err
 }
